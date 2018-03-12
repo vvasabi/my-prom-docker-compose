@@ -2,6 +2,7 @@ version: '3.1'
 
 services:
   prometheus:
+    container_name: prometheus
     image: prom/prometheus
     user: 988:981
     volumes:
@@ -15,6 +16,7 @@ services:
     restart: unless-stopped
 
   grafana:
+    container_name: grafana
     image: grafana/grafana
     depends_on:
       - prometheus
@@ -26,3 +28,17 @@ services:
       - 'GF_SECURITY_ADMIN_PASSWORD=foobar'
       - 'GF_USERS_ALLOW_SIGN_UP=false'
     restart: unless-stopped
+
+  cadvisor:
+    container_name: cadvisor
+    image: google/cadvisor:latest
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 9040:8080
+    restart: unless-stopped
+
